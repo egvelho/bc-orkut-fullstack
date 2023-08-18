@@ -4,7 +4,9 @@ import * as notepadService from "./notepad.service.mjs";
 export const notepadController = express.Router();
 
 notepadController.get("/", async (req, res) => {
-  const notepads = await notepadService.listNotepads();
+  const limit = Number(req.query.limit) || 30;
+  const offset = Number(req.query.offset) || 0;
+  const notepads = await notepadService.listNotepads({ limit, offset });
   res.status(200).json(notepads);
 });
 

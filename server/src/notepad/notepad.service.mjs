@@ -4,18 +4,26 @@ import * as jsonService from "../json/json.service.mjs";
 const notepadsPath = "data/notepads";
 const notepadLatestIdPath = "data/notepadsLatestId.json";
 
-export async function listNotepads() {
+export async function listNotepads({ limit, offset }) {
   const notepadsFiles = await fsp.readdir(notepadsPath);
+  const notepadsToLoad = notepadsFiles
+    .sort((a, b) => {
+      const idA = parseInt(a);
+      const idB = parseInt(b);
+      return idB - idA;
+    })
+    .slice(offset, limit + offset);
+  const count = notepadsFiles.length;
   let notepads = [];
-  for (const notepadFile of notepadsFiles) {
+  for (const notepadFile of notepadsToLoad) {
     const currentNotepad = await jsonService.readJson(
       `${notepadsPath}/${notepadFile}`
     );
     notepads.push(currentNotepad);
   }
   return {
-    notepads,
-    count: notepads.length,
+    notepads: notepads,
+    count,
   };
 }
 
@@ -23,9 +31,9 @@ export async function createNotepad(data) {
   const { notepadsLatestId } = await jsonService.readJson(notepadLatestIdPath);
   const notepadId = notepadsLatestId + 1;
   const nextNotepad = {
-    ...data,
     createdAt: new Date().toJSON(),
     id: notepadId,
+    ...data,
   };
   const path = `${notepadsPath}/${nextNotepad.id}.json`;
   await jsonService.createJson(path, nextNotepad);
