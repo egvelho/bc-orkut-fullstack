@@ -1,5 +1,7 @@
 import { promises as fsp } from "fs";
 import * as jsonService from "../json/json.service.mjs";
+import { createNotepadSchema } from "./schemas/create-notepad.schema.mjs";
+import { updateNotepadSchema } from "./schemas/update-notepad.schema.mjs";
 
 const notepadsPath = "data/notepads";
 const notepadLatestIdPath = "data/notepadsLatestId.json";
@@ -28,6 +30,7 @@ export async function listNotepads({ limit, offset }) {
 }
 
 export async function createNotepad(data) {
+  await createNotepadSchema.parseAsync(data);
   const { notepadsLatestId } = await jsonService.readJson(notepadLatestIdPath);
   const notepadId = notepadsLatestId + 1;
   const nextNotepad = {
@@ -49,6 +52,7 @@ export async function readNotepad(id) {
 }
 
 export async function updateNotepad(id, data) {
+  await updateNotepadSchema.parseAsync(data);
   const path = `${notepadsPath}/${id}.json`;
   await jsonService.updateJson(path, data);
   const notepad = await jsonService.readJson(path);
