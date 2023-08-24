@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prod": "node src/index.mjs",
     "dev": "nodemon src/index.mjs",
     "seed:notepad": "node src/notepad/notepad.seed.mjs"
   },
