@@ -1,11 +1,12 @@
 import "express-async-errors";
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { ZodError } from "zod";
 import { notepadController } from "./notepad/notepad.controller.mjs";
 
-const port = 8080;
-const host = "0.0.0.0";
+const port = process.env.PORT;
+const host = process.env.HOST;
 const app = express();
 
 function handleErrorMiddleware(err, req, res, next) {
