@@ -1,4 +1,5 @@
 import { promises as fsp } from "fs";
+import { db } from "../db.mjs";
 import * as jsonService from "../json/json.service.mjs";
 import { createNotepadSchema } from "./schemas/create-notepad.schema.mjs";
 import { updateNotepadSchema } from "./schemas/update-notepad.schema.mjs";
@@ -47,7 +48,9 @@ export async function createNotepad(data) {
 }
 
 export async function readNotepad(id) {
-  const notepad = await jsonService.readJson(`${notepadsPath}/${id}.json`);
+  const notepad = db
+    .prepare(/* sql */ `select * from notepads where id=?`)
+    .get(id);
   return notepad;
 }
 
