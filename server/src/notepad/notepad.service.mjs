@@ -1,49 +1,34 @@
-import { promises as fsp } from "fs";
 import { db } from "../db.mjs";
-import * as jsonService from "../json/json.service.mjs";
 import { createNotepadSchema } from "./schemas/create-notepad.schema.mjs";
-import { updateNotepadSchema } from "./schemas/update-notepad.schema.mjs";
-
-const notepadsPath = "data/notepads";
-const notepadLatestIdPath = "data/notepadsLatestId.json";
 
 export async function listNotepads({ limit, offset }) {
-  const notepadsFiles = await fsp.readdir(notepadsPath);
-  const notepadsToLoad = notepadsFiles
-    .sort((a, b) => {
-      const idA = parseInt(a);
-      const idB = parseInt(b);
-      return idB - idA;
-    })
-    .slice(offset, limit + offset);
-  const count = notepadsFiles.length;
-  let notepads = [];
-  for (const notepadFile of notepadsToLoad) {
-    const currentNotepad = await jsonService.readJson(
-      `${notepadsPath}/${notepadFile}`
-    );
-    notepads.push(currentNotepad);
-  }
+  const notepads = db
+    .prepare(
+      /* sql */ `
+    select * from notepads
+      order by id desc limit ? offset ?`
+    )
+    .all(limit, offset);
+
+  const { notepads_count: count } = db
+    .prepare(/* sql */ `select count(id) as notepads_count from notepads`)
+    .get();
+
   return {
-    notepads: notepads,
+    notepads,
     count,
   };
 }
 
 export async function createNotepad(data) {
   await createNotepadSchema.parseAsync(data);
-  const { notepadsLatestId } = await jsonService.readJson(notepadLatestIdPath);
-  const notepadId = notepadsLatestId + 1;
-  const nextNotepad = {
-    createdAt: new Date().toJSON(),
-    id: notepadId,
-    ...data,
-  };
-  const path = `${notepadsPath}/${nextNotepad.id}.json`;
-  await jsonService.createJson(path, nextNotepad);
-  await jsonService.updateJson(notepadLatestIdPath, {
-    notepadsLatestId: notepadId,
-  });
+  const nextNotepad = db
+    .prepare(
+      /* sql */ `
+      insert into notepads (title, subtitle, content)
+        values (?, ?, ?) returning *;`
+    )
+    .get(data.title, data.subtitle, data.content);
   return nextNotepad;
 }
 
@@ -55,16 +40,20 @@ export async function readNotepad(id) {
 }
 
 export async function updateNotepad(id, data) {
-  await updateNotepadSchema.parseAsync(data);
-  const path = `${notepadsPath}/${id}.json`;
-  await jsonService.updateJson(path, data);
-  const notepad = await jsonService.readJson(path);
+  const notepad = db
+    .prepare(
+      /* sql */ `
+      update notepads
+        set title=?, subtitle=?, content=?
+        where id=? returning *;`
+    )
+    .get(data.title, data.subtitle, data.content, id);
   return notepad;
 }
 
 export async function deleteNotepad(id) {
-  const path = `${notepadsPath}/${id}.json`;
-  const notepad = await jsonService.readJson(path);
-  await jsonService.deleteJson(path);
+  const notepad = db
+    .prepare(/* sql */ `delete from notepads where id=? returning *;`)
+    .get(id);
   return notepad;
 }

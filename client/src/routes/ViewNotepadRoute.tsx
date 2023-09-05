@@ -14,7 +14,7 @@ const initialNotepad = {
   title: "",
   subtitle: "",
   content: "",
-  createdAt: "",
+  created_at: "",
 };
 
 export function ViewNotepadRoute() {
@@ -69,7 +69,7 @@ export function ViewNotepadRoute() {
       </div>
       <div className="text-gray-500 mb-2">#{notepad.id}</div>
       <div className="text-gray-500">
-        {new Date(notepad.createdAt).toLocaleDateString()}
+        {new Date(notepad.created_at).toLocaleDateString()}
       </div>
       <Title>{notepad.title}</Title>
       <p className="mb-4 text-gray-500">{notepad.subtitle}</p>

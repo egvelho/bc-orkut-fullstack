@@ -55,7 +55,7 @@ export function HomeRoute() {
           >
             <div className="text-gray-500 mb-2">#{notepad.id}</div>
             <span className="text-sm text-gray-500">
-              {new Date(notepad.createdAt).toLocaleDateString()}
+              {new Date(notepad.created_at).toLocaleDateString()}
             </span>
             <h2 className="text-lg font-bold leading-tight pb-1">
               {notepad.title}

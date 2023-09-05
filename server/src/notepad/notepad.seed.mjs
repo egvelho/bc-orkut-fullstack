@@ -19,8 +19,7 @@ function generateNotepad() {
   return {
     title: faker.lorem.words(4 + Math.round(Math.random() * 4)),
     subtitle: faker.lorem.words(7 + Math.round(Math.random() * 7)),
-    content: faker.lorem.paragraphs(2 + Math.round(Math.random() * 6)),
-    createdAt: faker.date.past({ years: 3 }).toJSON(),
+    content: faker.lorem.paragraphs(1 + Math.round(Math.random() * 2)),
   };
 }
 
