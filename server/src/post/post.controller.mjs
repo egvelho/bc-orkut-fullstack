@@ -2,6 +2,7 @@ import express from "express";
 import * as postService from "./post.service.mjs";
 import { createPostSchema } from "./schemas/create-post.schema.mjs";
 import { updatePostSchema } from "./schemas/update-post.schema.mjs";
+import { createPostCommentSchema } from "./schemas/create-post-comment.schema.mjs";
 
 export const postController = express.Router();
 
@@ -37,4 +38,18 @@ postController.put("/:id", async (req, res) => {
   const postId = req.params.id;
   const post = await postService.updatePost(postId, postData);
   res.status(200).json(post);
+});
+
+postController.get("/:id/comments", async (req, res) => {
+  const postId = req.params.id;
+  const comments = await postService.listPostComments(postId);
+  res.status(200).json(comments);
+});
+
+postController.post("/:id/comments", async (req, res) => {
+  const postId = req.params.id;
+  const commentData = req.body;
+  await createPostCommentSchema.parseAsync(commentData);
+  const comment = await postService.createPostComment(postId, commentData);
+  res.status(201).json(comment);
 });

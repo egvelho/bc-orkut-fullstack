@@ -1,5 +1,6 @@
 import { db } from "../db.mjs";
 import { createPostSchema } from "./schemas/create-post.schema.mjs";
+import { createPostCommentSchema } from "./schemas/create-post-comment.schema.mjs";
 
 export async function listPosts({ limit, offset }) {
   const posts = db
@@ -51,4 +52,30 @@ export async function deletePost(id) {
     .prepare(/* sql */ `delete from posts where id=? returning *;`)
     .get(id);
   return post;
+}
+
+export async function listPostComments(postId) {
+  const comments = db
+    .prepare(
+      /* sql */
+      `select id, message, created_at
+       from comments
+       where post_id=?`
+    )
+    .all(postId);
+
+  return comments;
+}
+
+export async function createPostComment(postId, data) {
+  await createPostCommentSchema.parseAsync(data);
+  const comment = db
+    .prepare(
+      /* sql */ `
+    insert into comments (message, post_id)
+    values (?, ?) returning *
+  `
+    )
+    .get(data.message, postId);
+  return comment;
 }

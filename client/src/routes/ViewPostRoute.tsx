@@ -39,10 +39,12 @@ export function ViewPostRoute() {
     loadPost();
   }, [params.id]);
 
+  const pageTitle = `Ver publicação #${post.id}`
+
   return (
     <Card>
       <Helmet>
-        <title>Ver publicação #{post.id}</title>
+        <title>{pageTitle}</title>
       </Helmet>
       <Breadcrumbs
         links={[
