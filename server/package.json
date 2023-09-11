@@ -1,23 +1,23 @@
 {
-  "name": "bc-notepads-fullstack",
+  "name": "bc-orkut-fullstack",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "prod": "node src/index.mjs",
     "dev": "nodemon src/index.mjs",
-    "seed:notepad": "node src/notepad/notepad.seed.mjs"
+    "seed:orkut": "node src/post/post.seed.mjs"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/egvelho/bc-notepads-fullstack.git"
+    "url": "git+ssh://git@github.com/egvelho/bc-orkut-fullstack.git"
   },
   "author": "egvelho",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/egvelho/bc-notepads-fullstack/issues"
+    "url": "https://github.com/egvelho/bc-orkut-fullstack/issues"
   },
-  "homepage": "https://github.com/egvelho/bc-notepads-fullstack#readme",
+  "homepage": "https://github.com/egvelho/bc-orkut-fullstack#readme",
   "dependencies": {
     "better-sqlite3": "^8.5.2",
     "cors": "^2.8.5",

@@ -9,53 +9,48 @@ import { api } from "../api";
 
 const pageSize = 30;
 
-const initialNotepadsList = {
+const initialPostsList = {
   count: 0,
-  notepads: [],
+  posts: [],
 };
 
-export function NotepadPageRoute() {
+export function PostPageRoute() {
   const params = useParams();
   const offset = (parseInt(params.page) - 1) * pageSize;
-  const [notepadsList, setNotepadsList] = useState(initialNotepadsList);
-  const pageCount = Math.ceil(notepadsList.count / pageSize);
+  const [postsList, setPostsList] = useState(initialPostsList);
+  const pageCount = Math.ceil(postsList.count / pageSize);
   const pages = new Array(pageCount).fill(null).map((_, index) => index + 1);
 
-  async function loadNotepads() {
-    const response = await api.get(
-      `/notepads?limit=${pageSize}&offset=${offset}`
-    );
-    const nextNotepads = response.data;
-    setNotepadsList(nextNotepads);
+  async function loadPosts() {
+    const response = await api.get(`/posts?limit=${pageSize}&offset=${offset}`);
+    const nextPosts = response.data;
+    setPostsList(nextPosts);
   }
 
   useEffect(() => {
-    loadNotepads();
+    loadPosts();
   }, [params.page]);
 
   return (
     <Card>
       <Helmet>
-        <title>Pagina {params.page} | Notepads</title>
+        <title>Pagina {params.page} | Posts</title>
       </Helmet>
       <Title>
         Página {params.page} de {pageCount}
       </Title>
-      {notepadsList.notepads.map((notepad) => {
+      {postsList.posts.map((post) => {
         return (
           <Link
-            to={`/ver-notepad/${notepad.id}`}
-            key={notepad.id}
+            to={`/ver-publicacao/${post.id}`}
+            key={post.id}
             className="border-b py-2 cursor-pointer block"
           >
-            <div className="text-gray-500 mb-2">#{notepad.id}</div>
+            <div className="text-gray-500 mb-2">#{post.id}</div>
             <span className="text-sm text-gray-500">
-              {new Date(notepad.created_at).toLocaleDateString()}
+              {new Date(post.created_at).toLocaleDateString()}
             </span>
-            <h2 className="text-lg font-bold leading-tight pb-1">
-              {notepad.title}
-            </h2>
-            <p>{notepad.subtitle}</p>
+            <p>{post.content}</p>
           </Link>
         );
       })}
@@ -63,7 +58,7 @@ export function NotepadPageRoute() {
         {pages.map((page) => (
           <LinkButton
             key={page}
-            to={`/notepads/${page}`}
+            to={`/publicacoes/${page}`}
             className={page === parseInt(params.page) ? "bg-green-700" : ""}
           >
             {page}

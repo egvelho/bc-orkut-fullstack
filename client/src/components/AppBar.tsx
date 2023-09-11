@@ -15,7 +15,7 @@ export function AppBar() {
         </Link>
       </div>
       <div className="flex flex-row items-center gap-8">
-        <LinkButton to="/criar-notepad">Criar notepad</LinkButton>
+        <LinkButton to="/criar-publicacao">Criar publicação</LinkButton>
       </div>
     </header>
   );
@@ -25,7 +25,7 @@ function Logo() {
   return (
     <Link to="/" className="flex flex-row items-center gap-2">
       <LogoIcon className="text-green-400 text-4xl" />
-      <h1 className="text-lg uppercase font-bold">Notepads</h1>
+      <h1 className="text-lg uppercase font-bold">Publicações</h1>
     </Link>
   );
 }

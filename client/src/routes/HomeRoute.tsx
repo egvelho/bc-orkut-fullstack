@@ -8,65 +8,62 @@ import { api } from "../api";
 
 const pageSize = 30;
 
-const initialNotepadsList = {
+const initialPostsList = {
   count: 0,
-  notepads: [],
+  posts: [],
 };
 const initialLoading = true;
 
 export function HomeRoute() {
-  const [notepadsList, setNotepadsList] = useState(initialNotepadsList);
+  const [postsList, setPostsList] = useState(initialPostsList);
   const [loading, setLoading] = useState(initialLoading);
-  const pageCount = Math.ceil(notepadsList.count / pageSize);
+  const pageCount = Math.ceil(postsList.count / pageSize);
   const pages = new Array(pageCount).fill(null).map((_, index) => index + 1);
 
-  async function loadNotepads() {
-    const response = await api.get("/notepads");
-    const nextNotepads = response.data;
-    setNotepadsList(nextNotepads);
+  async function loadPosts() {
+    const response = await api.get("/posts");
+    const nextPosts = response.data;
+    setPostsList(nextPosts);
   }
 
   useEffect(() => {
-    loadNotepads();
+    loadPosts();
   }, []);
 
   useEffect(() => {
-    if (notepadsList.notepads.length > 0) {
+    if (postsList.posts.length > 0) {
       setLoading(false);
     }
-  }, [notepadsList]);
+  }, [postsList]);
 
   return (
     <Card>
       <Helmet>
-        <title>Home | Notepads</title>
+        <title>Home | Orkut</title>
       </Helmet>
       {loading && (
         <div className="flex justify-center">
           <FaSpinner className="text-4xl animate-spin" />
         </div>
       )}
-      {notepadsList.notepads.map((notepad) => {
+      {postsList.posts.map((post) => {
         return (
           <Link
-            to={`/ver-notepad/${notepad.id}`}
-            key={notepad.id}
+            to={`/ver-publicacao/${post.id}`}
+            key={post.id}
             className="border-b py-2 cursor-pointer block"
           >
-            <div className="text-gray-500 mb-2">#{notepad.id}</div>
+            <div className="text-gray-500 mb-2">#{post.id}</div>
             <span className="text-sm text-gray-500">
-              {new Date(notepad.created_at).toLocaleDateString()}
+              {new Date(post.created_at).toLocaleDateString()}
             </span>
-            <h2 className="text-lg font-bold leading-tight pb-1">
-              {notepad.title}
-            </h2>
-            <p>{notepad.subtitle}</p>
+            <p>{post.content}</p>
           </Link>
         );
       })}
       <div className="flex flex-row gap-2 flex-wrap pt-4">
         {pages.map((page) => (
-          <LinkButton key={page} to={`/notepads/${page}`}>
+          <LinkButton key={page} to={`/publicacoes/${page}`}>
             {page}
           </LinkButton>
         ))}
