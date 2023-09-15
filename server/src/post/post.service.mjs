@@ -26,9 +26,9 @@ export async function createPost(data) {
   const nextPost = db
     .prepare(
       /* sql */ `
-      insert into posts (content) values (?) returning *;`
+      insert into posts (content, user_id) values (?, ?) returning *;`
     )
-    .get(data.content);
+    .get(data.content, data.user_id);
   return nextPost;
 }
 
@@ -60,7 +60,8 @@ export async function listPostComments(postId) {
       /* sql */
       `select id, message, created_at
        from comments
-       where post_id=?`
+       where post_id=?
+       order by created_at desc`
     )
     .all(postId);
 
@@ -72,10 +73,10 @@ export async function createPostComment(postId, data) {
   const comment = db
     .prepare(
       /* sql */ `
-    insert into comments (message, post_id)
-    values (?, ?) returning *
+    insert into comments (message, post_id, user_id)
+    values (?, ?, ?) returning *
   `
     )
-    .get(data.message, postId);
+    .get(data.message, postId, data.user_id);
   return comment;
 }

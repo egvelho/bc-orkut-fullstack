@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { LinkButton } from "./LinkButton";
-import { MdStickyNote2 as LogoIcon } from "react-icons/md";
 
 export function AppBar() {
   return (
@@ -23,9 +22,14 @@ export function AppBar() {
 
 function Logo() {
   return (
-    <Link to="/" className="flex flex-row items-center gap-2">
-      <LogoIcon className="text-green-400 text-4xl" />
-      <h1 className="text-lg uppercase font-bold">Publicações</h1>
+    <Link to="/" className="flex flex-row items-center gap-2" title="Orkut">
+      <img
+        alt="Orkut"
+        src="/orkut.png"
+        style={{
+          height: "22px",
+        }}
+      />
     </Link>
   );
 }

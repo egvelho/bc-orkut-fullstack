@@ -11,4 +11,5 @@ const content = z
 
 export const createPostSchema = z.object({
   content,
+  user_id: z.number().optional(),
 });
