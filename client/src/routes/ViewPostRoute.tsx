@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import toast from "react-simple-toasts";
 import { Helmet } from "react-helmet";
 import { api } from "../api";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card } from "../components/Card";
 import { Title } from "../components/Title";
 import { Button } from "../components/Button";
@@ -119,11 +119,28 @@ export function ViewPostRoute() {
         </form>
         <div>
           {comments.map((comment) => (
-            <div key={comment.id} className="border-b py-2 block">
-              <span className="text-sm text-gray-500">
-                {new Date(comment.created_at).toLocaleDateString()}
-              </span>
-              <p>{comment.message}</p>
+            <div key={comment.id} className="border-b py-2">
+              <div className="flex items-center gap-2">
+                <Link to={`/perfil/${comment.user_id}`}>
+                  <img
+                    src={comment.user_avatar}
+                    alt={`Foto de ${comment.user_first_name} ${comment.user_last_name}`}
+                    className="w-[48px] h-[48px] rounded-full"
+                  />
+                </Link>
+                <div className="flex flex-col">
+                  <Link
+                    to={`/perfil/${comment.user_id}`}
+                    className="text-blue-600 hover:text-blue-800 hover:underline font-bold"
+                  >
+                    {comment.user_first_name} {comment.user_last_name}
+                  </Link>
+                  <span className="text-sm text-gray-500">
+                    {new Date(post.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+              <p>{post.content}</p>
             </div>
           ))}
         </div>

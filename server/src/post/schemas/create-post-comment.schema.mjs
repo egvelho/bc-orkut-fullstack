@@ -11,5 +11,5 @@ const message = z
 
 export const createPostCommentSchema = z.object({
   message,
-  user_id: z.number().optional(),
+  user_id: z.number().nullable(),
 });
