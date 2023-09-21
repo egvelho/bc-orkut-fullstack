@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import { ZodError } from "zod";
 import { postController } from "./post/post.controller.mjs";
+import { userController } from "./user/user.controller.mjs";
 
 const port = process.env.PORT;
 const host = process.env.HOST;
@@ -21,6 +22,7 @@ function handleErrorMiddleware(err, req, res, next) {
 app.use(cors());
 app.use(express.json());
 app.use("/posts", postController);
+app.use("/users", userController);
 app.use(handleErrorMiddleware);
 
 app.listen(port, host, () => {

@@ -26,3 +26,33 @@ export async function listUsers() {
   const users = db.prepare(/* sql */ `select * from users`).all();
   return users;
 }
+
+export async function addFriend(userA, userB) {
+  const friend = db
+    .prepare(
+      /* sql */
+      `insert into friends (user_a, user_b) values (?, ?) returning *`
+    )
+    .get(userA, userB);
+  return friend;
+}
+
+export async function listLatestFriends(userId) {
+  const friends = db
+    .prepare(
+      /* sql */ `
+      select * from users where id in (
+        select user_b
+        from friends
+        where user_a = ?
+        union
+        select user_a
+        from friends
+        where user_b = ?
+      )
+      order by created_at desc
+      limit 9;`
+    )
+    .all(userId, userId);
+  return friends;
+}
