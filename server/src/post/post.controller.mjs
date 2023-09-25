@@ -9,7 +9,9 @@ export const postController = express.Router();
 postController.get("/", async (req, res) => {
   const limit = Number(req.query.limit) || 30;
   const offset = Number(req.query.offset) || 0;
-  const posts = await postService.listPosts({ limit, offset });
+  const orderBy = req.query.order_by || "desc";
+  const search = req.query.search || null;
+  const posts = await postService.listPosts({ limit, offset, orderBy, search });
   res.status(200).json(posts);
 });
 

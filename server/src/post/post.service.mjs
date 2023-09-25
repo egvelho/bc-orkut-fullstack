@@ -2,7 +2,8 @@ import { db } from "../db.mjs";
 import { createPostSchema } from "./schemas/create-post.schema.mjs";
 import { createPostCommentSchema } from "./schemas/create-post-comment.schema.mjs";
 
-export async function listPosts({ limit, offset }) {
+export async function listPosts({ limit, offset, orderBy, search }) {
+  const whereSearch = search ? `where content like '%${search}%'` : "";
   const posts = db
     .prepare(
       /* sql */ `
@@ -15,7 +16,8 @@ export async function listPosts({ limit, offset }) {
       users.last_name as user_last_name,
       users.avatar as user_avatar
     from posts join users on posts.user_id = users.id
-    order by posts.id desc limit ? offset ?`
+    ${whereSearch}
+    order by posts.created_at ${orderBy} limit ? offset ?`
     )
     .all(limit, offset);
 

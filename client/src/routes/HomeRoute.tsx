@@ -13,15 +13,24 @@ const initialPostsList = {
   posts: [],
 };
 const initialLoading = true;
+const initialSearch = "";
+const initialOrderBy = "desc";
 
 export function HomeRoute() {
   const [postsList, setPostsList] = useState(initialPostsList);
   const [loading, setLoading] = useState(initialLoading);
+  const [search, setSearch] = useState(initialSearch);
+  const [orderBy, setOrderBy] = useState(initialOrderBy);
   const pageCount = Math.ceil(postsList.count / pageSize);
   const pages = new Array(pageCount).fill(null).map((_, index) => index + 1);
 
   async function loadPosts() {
-    const response = await api.get("/posts");
+    const response = await api.get(`/posts`, {
+      params: {
+        search,
+        order_by: orderBy,
+      },
+    });
     const nextPosts = response.data;
     setPostsList(nextPosts);
   }
@@ -29,6 +38,10 @@ export function HomeRoute() {
   useEffect(() => {
     loadPosts();
   }, []);
+
+  useEffect(() => {
+    loadPosts();
+  }, [search, orderBy]);
 
   useEffect(() => {
     if (postsList.posts.length > 0) {
@@ -46,6 +59,27 @@ export function HomeRoute() {
           <FaSpinner className="text-4xl animate-spin" />
         </div>
       )}
+      <div className="flex gap-2">
+        <input
+          type="search"
+          placeholder="Buscar publicações..."
+          className="flex-1 border-gray-400 focus:border-pink-600 rounded-2xl border-2 outline-none p-2"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
+        <select
+          className="bg-white p-2 border-gray-400 focus:border-pink-600 rounded-md border-2"
+          onChange={(event) => {
+            setOrderBy(event.target.value);
+          }}
+        >
+          <option value="desc">Mais recentes</option>
+          <option value="asc">Mais antigas</option>
+        </select>
+      </div>
+      {postsList.posts.length === 0 &&
+        loading === false &&
+        "Nenhum resultado encontrado"}
       {postsList.posts.map((post) => {
         return (
           <div key={post.id} className="border-b py-2">

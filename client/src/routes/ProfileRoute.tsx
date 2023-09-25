@@ -29,10 +29,16 @@ export function ProfileRoute() {
   }, [userId]);
 
   return (
-    <div>
-      <AvatarCard {...user} />
-      <ProfileCard {...user} />
-      <FriendsCard {...user} />
+    <div className="flex flex-col lg:flex-row gap-2 m-2 sm:mx-auto max-w-screen-sm lg:max-w-screen-lg lg:mx-auto">
+      <div className="lg:max-w-[192px]">
+        <AvatarCard {...user} />
+      </div>
+      <div className="flex-1 flex flex-col gap-2">
+        <ProfileCard {...user} />
+      </div>
+      <div className="lg:max-w-[256px]">
+        <FriendsCard {...user} />
+      </div>
     </div>
   );
 }
@@ -79,17 +85,21 @@ function FriendsCard({ id }) {
   return (
     <Card>
       <h2 className="lowercase font-bold">Amigos</h2>
-      <div>
+      <div className="flex flex-row flex-wrap">
         {friends.map((friend) => (
-          <div>
+          <div className="w-1/3 p-1 box-border text-center">
             <Link to={`/perfil/${friend.id}`}>
-              <img src={friend.avatar} alt={`Foto de ${friend.first_name}`} />
+              <img
+                src={friend.avatar}
+                alt={`Foto de ${friend.first_name}`}
+                className="w-full"
+              />
             </Link>
             <Link
               to={`/perfil/${friend.id}`}
-              className="text-blue-600 hover:text-blue-800 hover:underline font-bold"
+              className="text-blue-600 hover:text-blue-700 font-bold text-sm hover:underline leading-tight"
             >
-              {friend.first_name} {friend.last_name}
+              {friend.first_name}
             </Link>
           </div>
         ))}
