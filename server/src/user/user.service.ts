@@ -1,5 +1,5 @@
-import { createUserSchema } from "./schemas/create-user.schema.mjs";
-import { db } from "../db.mjs";
+import { createUserSchema } from "./schemas/create-user.schema";
+import { db } from "../db";
 
 export async function createUser(data) {
   await createUserSchema.parseAsync(data);

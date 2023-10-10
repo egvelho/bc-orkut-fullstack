@@ -1,6 +1,6 @@
-import { db } from "../db.mjs";
-import { createPostSchema } from "./schemas/create-post.schema.mjs";
-import { createPostCommentSchema } from "./schemas/create-post-comment.schema.mjs";
+import { db } from "../db";
+import { createPostSchema } from "./schemas/create-post.schema";
+import { createPostCommentSchema } from "./schemas/create-post-comment.schema";
 
 export async function listPosts({ limit, offset, orderBy, search }) {
   const whereSearch = search ? `where content like '%${search}%'` : "";

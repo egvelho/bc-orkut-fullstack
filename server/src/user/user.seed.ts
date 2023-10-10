@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import * as userService from "./user.service.mjs";
+import * as userService from "./user.service";
 
 const defaultLimit = 50;
 

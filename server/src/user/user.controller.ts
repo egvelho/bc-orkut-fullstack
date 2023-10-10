@@ -1,5 +1,5 @@
 import express from "express";
-import * as userService from "./user.service.mjs";
+import * as userService from "./user.service";
 
 export const userController = express.Router();
 

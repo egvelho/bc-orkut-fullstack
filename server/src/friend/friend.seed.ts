@@ -1,4 +1,4 @@
-import * as userService from "../user/user.service.mjs";
+import * as userService from "../user/user.service";
 
 const minFriendsCount = 12;
 const friendsRange = 15;

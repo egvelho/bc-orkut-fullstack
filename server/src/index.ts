@@ -1,14 +1,18 @@
+import "reflect-metadata";
+
 import "express-async-errors";
 import "dotenv/config";
-import express from "express";
-import cors from "cors";
+import { createExpressServer } from "routing-controllers";
 import { ZodError } from "zod";
-import { postController } from "./post/post.controller.mjs";
-import { userController } from "./user/user.controller.mjs";
+import { PostController } from "./post/post.controller";
+import { userController } from "./user/user.controller";
 
 const port = process.env.PORT;
 const host = process.env.HOST;
-const app = express();
+const app = createExpressServer({
+  cors: true,
+  controllers: [PostController],
+});
 
 function handleErrorMiddleware(err, req, res, next) {
   if (err instanceof ZodError) {
@@ -19,9 +23,6 @@ function handleErrorMiddleware(err, req, res, next) {
   throw err;
 }
 
-app.use(cors());
-app.use(express.json());
-app.use("/posts", postController);
 app.use("/users", userController);
 app.use(handleErrorMiddleware);
 
