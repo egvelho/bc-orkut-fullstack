@@ -5,13 +5,13 @@ import "dotenv/config";
 import { createExpressServer } from "routing-controllers";
 import { ZodError } from "zod";
 import { PostController } from "./post/post.controller";
-import { userController } from "./user/user.controller";
+import { UserController } from "./user/user.controller";
 
 const port = process.env.PORT;
 const host = process.env.HOST;
 const app = createExpressServer({
   cors: true,
-  controllers: [PostController],
+  controllers: [PostController, UserController],
 });
 
 function handleErrorMiddleware(err, req, res, next) {
@@ -23,7 +23,6 @@ function handleErrorMiddleware(err, req, res, next) {
   throw err;
 }
 
-app.use("/users", userController);
 app.use(handleErrorMiddleware);
 
 app.listen(port, host, () => {

@@ -1,16 +1,24 @@
+import { JsonController, Get, Param } from "routing-controllers";
 import express from "express";
-import * as userService from "./user.service";
+import { UserRepository } from "./user.repository";
 
-export const userController = express.Router();
+@JsonController("/users")
+export class UserController {
+  constructor() {
+    this.userRepository = new UserRepository();
+  }
 
-userController.get("/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  const user = await userService.readUser(userId);
-  res.status(200).json(user);
-});
+  userRepository: UserRepository;
 
-userController.get("/:userId/friends", async (req, res) => {
-  const userId = req.params.userId;
-  const friends = await userService.listLatestFriends(userId);
-  res.status(200).json(friends);
-});
+  @Get("/:userId")
+  async getById(@Param("userId") userId: number) {
+    const user = await this.userRepository.readUser(userId);
+    return user;
+  }
+
+  @Get("/:userId/friends")
+  async listLatestFriends(@Param("userId") userId: number) {
+    const friends = await this.userRepository.listLatestFriends(userId);
+    return friends;
+  }
+}
