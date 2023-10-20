@@ -1,4 +1,5 @@
 import { db } from "../db";
+import { prisma } from "../prisma";
 import { createPostSchema } from "./schemas/create-post.schema";
 import { createPostCommentSchema } from "./schemas/create-post-comment.schema";
 
@@ -22,6 +23,7 @@ export class PostRepository {
       )
       .all(limit, offset);
 
+    // @ts-ignore
     const { posts_count: count } = db
       .prepare(/* sql */ `select count(id) as posts_count from posts`)
       .get();
@@ -34,34 +36,37 @@ export class PostRepository {
 
   async createPost(data: any) {
     await createPostSchema.parseAsync(data);
-    const nextPost = db
-      .prepare(
-        /* sql */ `
-        insert into posts (content, user_id) values (?, ?) returning *;`
-      )
-      .get(data.content, data.user_id);
+    const nextPost = await prisma.posts.create({
+      data,
+    });
     return nextPost;
   }
 
   async readPost(id: number) {
-    const post = db.prepare(/* sql */ `select * from posts where id=?`).get(id);
+    const post = await prisma.posts.findFirst({
+      where: {
+        id,
+      },
+    });
     return post;
   }
 
   async updatePost(id: number, data: any) {
-    const post = db
-      .prepare(
-        /* sql */ `
-        update posts set content=? where id=? returning *;`
-      )
-      .get(data.content, id);
+    const post = await prisma.posts.update({
+      where: {
+        id,
+      },
+      data,
+    });
     return post;
   }
 
   async deletePost(id: number) {
-    const post = db
-      .prepare(/* sql */ `delete from posts where id=? returning *;`)
-      .get(id);
+    const post = await prisma.posts.delete({
+      where: {
+        id,
+      },
+    });
     return post;
   }
 
