@@ -1,13 +1,15 @@
-import * as postService from "./post.service";
-import * as userService from "../user/user.service";
+import { PostRepository } from "./post.repository";
+import { UserRepository } from "../user/user.repository";
 import { faker } from "@faker-js/faker";
 
-const defaultLimit = 100;
-const minCommentCount = 3;
-const commentRange = 12;
+const defaultLimit = 20;
+const minCommentCount = 1;
+const commentRange = 3;
 
 async function postSeed() {
-  const users = await userService.listUsers();
+  const userRepository = new UserRepository();
+  const postRepository = new PostRepository();
+  const users = await userRepository.listUsers();
   const usersIds = users.map((user) => user.id);
 
   const limit = Number(process.argv[2]) || defaultLimit;
@@ -16,7 +18,7 @@ async function postSeed() {
   for (let index = 0; index < limit; index++) {
     const userId = getRandomUserId(usersIds);
     const postData = generatePost(userId);
-    const post = await postService.createPost(postData);
+    const post = await postRepository.createPost(postData);
     console.log(`Criado post de id #${post.id}`);
     await commentSeed(post, usersIds);
   }
@@ -24,12 +26,16 @@ async function postSeed() {
 }
 
 async function commentSeed(post, usersIds) {
+  const postRepository = new PostRepository();
   const commentCount =
     minCommentCount + Math.round(Math.random() * commentRange);
   for (let index = 0; index < commentCount; index++) {
     const userId = getRandomUserId(usersIds);
     const comment = generateComment(userId);
-    const addedComment = await postService.createPostComment(post.id, comment);
+    const addedComment = await postRepository.createPostComment(
+      post.id,
+      comment
+    );
     console.log(`Criado comentário de id #${addedComment.id}`);
   }
 }

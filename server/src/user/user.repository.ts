@@ -1,6 +1,5 @@
 import { createUserSchema } from "./schemas/create-user.schema";
 import { prisma } from "../prisma";
-import { db } from "../db";
 
 export class UserRepository {
   async createUser(data: any) {
@@ -34,22 +33,18 @@ export class UserRepository {
   }
 
   async listLatestFriends(userId: number) {
-    const friends = db
-      .prepare(
-        /* sql */ `
+    const friends = prisma.$queryRaw/* sql */ `
         select * from users where id in (
           select user_b
           from friends
-          where user_a = ?
+          where user_a = ${userId}
           union
           select user_a
           from friends
-          where user_b = ?
+          where user_b = ${userId}
         )
         order by created_at desc
-        limit 9;`
-      )
-      .all(userId, userId);
+        limit 9`;
     return friends;
   }
 }

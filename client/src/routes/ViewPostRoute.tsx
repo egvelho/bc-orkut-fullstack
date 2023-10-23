@@ -123,8 +123,8 @@ export function ViewPostRoute() {
               <div className="flex items-center gap-2">
                 <Link to={`/perfil/${comment.user_id}`}>
                   <img
-                    src={comment.user_avatar}
-                    alt={`Foto de ${comment.user_first_name} ${comment.user_last_name}`}
+                    src={comment.users.avatar}
+                    alt={`Foto de ${comment.users.first_name} ${comment.users.last_name}`}
                     className="w-[48px] h-[48px] rounded-full"
                   />
                 </Link>
@@ -133,7 +133,7 @@ export function ViewPostRoute() {
                     to={`/perfil/${comment.user_id}`}
                     className="text-blue-600 hover:text-blue-800 hover:underline font-bold"
                   >
-                    {comment.user_first_name} {comment.user_last_name}
+                    {comment.users.first_name} {comment.users.last_name}
                   </Link>
                   <span className="text-sm text-gray-500">
                     {new Date(post.created_at).toLocaleDateString()}
