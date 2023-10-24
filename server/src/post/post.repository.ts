@@ -4,7 +4,6 @@ import { createPostCommentSchema } from "./schemas/create-post-comment.schema";
 
 export class PostRepository {
   async listPosts({ limit, offset, orderBy, search }: any) {
-    const whereSearch = search ? `where content like '%${search}%'` : "";
     const posts = await prisma.posts.findMany({
       select: {
         id: true,
@@ -19,9 +18,6 @@ export class PostRepository {
           },
         },
       },
-      orderBy: {
-        created_at: orderBy,
-      },
       where: search
         ? {
             content: {
@@ -29,12 +25,15 @@ export class PostRepository {
             },
           }
         : undefined,
+      orderBy: {
+        created_at: orderBy,
+      },
       take: limit,
       skip: offset,
     });
 
     const count = await prisma.posts.count();
-    // @ts-ignore
+
     return {
       posts,
       count,
@@ -44,34 +43,39 @@ export class PostRepository {
   async createPost(data: any) {
     await createPostSchema.parseAsync(data);
     const nextPost = await prisma.posts.create({
-      data,
+      data: {
+        user_id: data.user_id,
+        content: data.content,
+      },
     });
     return nextPost;
   }
 
-  async readPost(id: number) {
-    const post = await prisma.posts.findFirst({
+  async readPost(postId: number) {
+    const post = await prisma.posts.findUnique({
       where: {
-        id,
+        id: postId,
       },
     });
     return post;
   }
 
-  async updatePost(id: number, data: any) {
+  async updatePost(postId: number, data: any) {
     const post = await prisma.posts.update({
-      where: {
-        id,
+      data: {
+        content: data.content,
       },
-      data,
+      where: {
+        id: postId,
+      },
     });
     return post;
   }
 
-  async deletePost(id: number) {
+  async deletePost(postId: number) {
     const post = await prisma.posts.delete({
       where: {
-        id,
+        id: postId,
       },
     });
     return post;
@@ -79,9 +83,6 @@ export class PostRepository {
 
   async listPostComments(postId: number) {
     const comments = await prisma.comments.findMany({
-      where: {
-        post_id: postId,
-      },
       select: {
         id: true,
         message: true,
@@ -95,10 +96,14 @@ export class PostRepository {
           },
         },
       },
+      where: {
+        post_id: postId,
+      },
       orderBy: {
         created_at: "desc",
       },
     });
+
     return comments;
   }
 
@@ -106,7 +111,8 @@ export class PostRepository {
     await createPostCommentSchema.parseAsync(data);
     const comment = await prisma.comments.create({
       data: {
-        ...data,
+        message: data.message,
+        user_id: data.user_id,
         post_id: postId,
       },
     });

@@ -4,14 +4,21 @@ import { prisma } from "../prisma";
 export class UserRepository {
   async createUser(data: any) {
     await createUserSchema.parseAsync(data);
-    const user = await prisma.users.create({ data });
+    const user = await prisma.users.create({
+      data: {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        avatar: data.avatar,
+        passwd: data.password,
+      },
+    });
     return user;
   }
 
-  async readUser(id: number) {
-    const user = await prisma.users.findFirst({
+  async readUser(userId: number) {
+    const user = await prisma.users.findUnique({
       where: {
-        id,
+        id: userId,
       },
     });
     return user;
@@ -22,18 +29,18 @@ export class UserRepository {
     return users;
   }
 
-  async addFriend(user_a: number, user_b: number) {
+  async addFriend(userA: number, userB: number) {
     const friend = await prisma.friends.create({
       data: {
-        user_a,
-        user_b,
+        user_a: userA,
+        user_b: userB,
       },
     });
     return friend;
   }
 
   async listLatestFriends(userId: number) {
-    const friends = prisma.$queryRaw/* sql */ `
+    const friends = await prisma.$queryRaw/* sql */ `
         select * from users where id in (
           select user_b
           from friends
@@ -44,7 +51,7 @@ export class UserRepository {
           where user_b = ${userId}
         )
         order by created_at desc
-        limit 9`;
+        limit 9;`;
     return friends;
   }
 }

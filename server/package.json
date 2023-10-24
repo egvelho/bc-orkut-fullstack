@@ -6,9 +6,9 @@
   "scripts": {
     "prod": "node src/index.mjs",
     "dev": "nodemon --inspect src/index.ts",
-    "seed:post": "ts-node src/post/post.seed.ts",
-    "seed:user": "ts-node src/user/user.seed.ts",
-    "seed:friend": "ts-node src/friend/friend.seed.ts"
+    "seed:post": "node src/post/post.seed.mjs",
+    "seed:user": "node src/user/user.seed.mjs",
+    "seed:friend": "node src/friend/friend.seed.mjs"
   },
   "repository": {
     "type": "git",
