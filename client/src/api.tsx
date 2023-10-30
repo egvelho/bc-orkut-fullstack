@@ -16,13 +16,23 @@ api.interceptors.response.use(
     return config;
   },
   (error) => {
-    if (error.response.status !== 422) {
-      throw error;
-    }
-
-    const errors = error.response.data.issues.map((issue) => issue.message);
-    errors.forEach((error) =>
-      toast(error, {
+    if (error.response.status === 400) {
+      const errors = error.response.data.errors.map((issue) =>
+        Object.values(issue.constraints).at(0)
+      );
+      errors.forEach((error) =>
+        toast(error, {
+          render(message) {
+            return (
+              <div className="p-2 rounded-md text-gray-100 bg-red-500">
+                {message}
+              </div>
+            );
+          },
+        })
+      );
+    } else if (error.response.data.message && error.response.status >= 400) {
+      toast(error.response.data.message, {
         render(message) {
           return (
             <div className="p-2 rounded-md text-gray-100 bg-red-500">
@@ -30,7 +40,9 @@ api.interceptors.response.use(
             </div>
           );
         },
-      })
-    );
+      });
+    } else {
+      throw error;
+    }
   }
 );

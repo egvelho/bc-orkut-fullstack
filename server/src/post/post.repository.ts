@@ -1,9 +1,20 @@
 import { prisma } from "../prisma";
-import { createPostSchema } from "./schemas/create-post.schema";
-import { createPostCommentSchema } from "./schemas/create-post-comment.schema";
+import type { CreatePostDto } from "./dtos/create-post.dto";
+import type { UpdatePostDto } from "./dtos/update-post.dto";
+import type { CreatePostCommentDto } from "./dtos/create-post-comment.dto";
 
 export class PostRepository {
-  async listPosts({ limit, offset, orderBy, search }: any) {
+  async listPosts({
+    limit,
+    offset,
+    orderBy,
+    search,
+  }: {
+    limit: number;
+    offset: number;
+    orderBy: "asc" | "desc";
+    search?: string;
+  }) {
     const posts = await prisma.posts.findMany({
       select: {
         id: true,
@@ -40,8 +51,7 @@ export class PostRepository {
     };
   }
 
-  async createPost(data: any) {
-    await createPostSchema.parseAsync(data);
+  async createPost(data: CreatePostDto) {
     const nextPost = await prisma.posts.create({
       data: {
         user_id: data.user_id,
@@ -60,7 +70,7 @@ export class PostRepository {
     return post;
   }
 
-  async updatePost(postId: number, data: any) {
+  async updatePost(postId: number, data: UpdatePostDto) {
     const post = await prisma.posts.update({
       data: {
         content: data.content,
@@ -107,8 +117,7 @@ export class PostRepository {
     return comments;
   }
 
-  async createPostComment(postId: number, data: any) {
-    await createPostCommentSchema.parseAsync(data);
+  async createPostComment(postId: number, data: CreatePostCommentDto) {
     const comment = await prisma.comments.create({
       data: {
         message: data.message,

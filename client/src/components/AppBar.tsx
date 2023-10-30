@@ -15,6 +15,7 @@ export function AppBar() {
       </div>
       <div className="flex flex-row items-center gap-8">
         <LinkButton to="/criar-publicacao">Criar publicação</LinkButton>
+        <LinkButton to="/entrar">Entrar</LinkButton>
       </div>
     </header>
   );

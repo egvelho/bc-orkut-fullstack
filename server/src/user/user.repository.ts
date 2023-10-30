@@ -1,15 +1,15 @@
-import { createUserSchema } from "./schemas/create-user.schema";
 import { prisma } from "../prisma";
+import type { CreateUserDto } from "./dtos/create-user.dto";
 
 export class UserRepository {
-  async createUser(data: any) {
-    await createUserSchema.parseAsync(data);
+  async createUser(data: CreateUserDto) {
     const user = await prisma.users.create({
       data: {
         first_name: data.first_name,
         last_name: data.last_name,
         avatar: data.avatar,
         passwd: data.password,
+        email: data.email,
       },
     });
     return user;
@@ -19,6 +19,15 @@ export class UserRepository {
     const user = await prisma.users.findUnique({
       where: {
         id: userId,
+      },
+    });
+    return user;
+  }
+
+  async findByEmail(email: string) {
+    const user = await prisma.users.findUnique({
+      where: {
+        email,
       },
     });
     return user;

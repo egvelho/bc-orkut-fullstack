@@ -6,6 +6,7 @@ import { ViewPostRoute } from "./routes/ViewPostRoute";
 import { EditPostRoute } from "./routes/EditPostRoute";
 import { PostPageRoute } from "./routes/PostPageRoute";
 import { ProfileRoute } from "./routes/ProfileRoute";
+import { SignInRoute } from "./routes/SignInRoute";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/editar-publicacao/:id" element={<EditPostRoute />} />
           <Route path="/publicacoes/:page" element={<PostPageRoute />} />
           <Route path="/perfil/:id" element={<ProfileRoute />} />
+          <Route path="/entrar" element={<SignInRoute />} />
         </Routes>
       </div>
     </BrowserRouter>

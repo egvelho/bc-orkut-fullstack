@@ -10,9 +10,9 @@ import {
   HttpCode,
 } from "routing-controllers";
 import { PostRepository } from "./post.repository";
-import { createPostSchema } from "./schemas/create-post.schema";
-import { updatePostSchema } from "./schemas/update-post.schema";
-import { createPostCommentSchema } from "./schemas/create-post-comment.schema";
+import { CreatePostDto } from "./dtos/create-post.dto";
+import { UpdatePostDto } from "./dtos/update-post.dto";
+import { CreatePostCommentDto } from "./dtos/create-post-comment.dto";
 
 @JsonController("/posts")
 export class PostController {
@@ -32,7 +32,7 @@ export class PostController {
     const posts = await this.postRepository.listPosts({
       limit,
       offset,
-      orderBy,
+      orderBy: orderBy as "asc" | "desc",
       search,
     });
     return posts;
@@ -46,8 +46,7 @@ export class PostController {
 
   @HttpCode(201)
   @Post()
-  async createPost(@Body() body: any) {
-    await createPostSchema.parseAsync(body);
+  async createPost(@Body() body: CreatePostDto) {
     const post = await this.postRepository.createPost(body);
     return post;
   }
@@ -59,8 +58,7 @@ export class PostController {
   }
 
   @Put("/:id")
-  async updateById(@Param("id") postId: number, @Body() body: any) {
-    await updatePostSchema.parseAsync(body);
+  async updateById(@Param("id") postId: number, @Body() body: UpdatePostDto) {
     const post = await this.postRepository.updatePost(postId, body);
     return post;
   }
@@ -73,8 +71,10 @@ export class PostController {
 
   @HttpCode(201)
   @Post("/:id/comments")
-  async createPostComment(@Param("id") postId: number, @Body() body: any) {
-    await createPostCommentSchema.parseAsync(body);
+  async createPostComment(
+    @Param("id") postId: number,
+    @Body() body: CreatePostCommentDto
+  ) {
     const comment = await this.postRepository.createPostComment(postId, body);
     return comment;
   }
