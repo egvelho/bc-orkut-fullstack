@@ -1,18 +1,19 @@
 import axios from "axios";
 import toast from "react-simple-toasts";
+import { TokenStorage } from "./tokenStorage";
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
-  console.log("enviando...");
+  const token = TokenStorage.getToken();
+  config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
 api.interceptors.response.use(
   (config) => {
-    console.log("recebendo...");
     return config;
   },
   (error) => {

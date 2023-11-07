@@ -5,12 +5,16 @@ import { createExpressServer } from "routing-controllers";
 import { PostController } from "./post/post.controller";
 import { UserController } from "./user/user.controller";
 import { AuthController } from "./auth/auth.controller";
+import { authorizationChecker } from "./auth/checkers/authorizationChecker";
+import { currentUserChecker } from "./auth/checkers/currentUserChecker";
 
 const port = process.env.PORT;
 const host = process.env.HOST;
 const app = createExpressServer({
   cors: true,
   controllers: [PostController, UserController, AuthController],
+  authorizationChecker,
+  currentUserChecker,
 });
 
 app.listen(port, host, () => {

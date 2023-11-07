@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { api } from "../api";
+import { TokenStorage } from "../tokenStorage";
 
 const initialForm = {
   email: "",
@@ -12,9 +13,18 @@ const initialForm = {
 export function SignInRoute() {
   const [form, setForm] = useState(initialForm);
 
+  useEffect(() => {
+    api.get("/auth/session");
+  }, []);
+
   async function submitForm(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const response = await api.post("/auth/sign-in", form);
+    if (response === undefined) {
+      return;
+    }
+    const token = response.data.token;
+    TokenStorage.setToken(token);
   }
 
   return (
