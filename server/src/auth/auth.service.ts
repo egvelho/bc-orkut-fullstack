@@ -1,5 +1,6 @@
 import type { SignInDto } from "./dto/sign-in.dto";
-import { UnauthorizedError } from "routing-controllers";
+import type { CreateUserDto } from "../user/dtos/create-user.dto";
+import { UnauthorizedError, BadRequestError } from "routing-controllers";
 import { UserRepository } from "../user/user.repository";
 import { JwtService } from "./jwt.service";
 
@@ -32,5 +33,26 @@ export class AuthService {
     const token = this.jwtService.encode(payload);
 
     return { user: maybeUser, token };
+  }
+
+  async signUp(createUserDto: CreateUserDto) {
+    const maybeUser = await this.userRepository.findByEmail(
+      createUserDto.email
+    );
+    if (maybeUser) {
+      throw new BadRequestError("Alguém já está utilizando esse email.");
+    }
+
+    const user = await this.userRepository.createUser(createUserDto);
+
+    const payload = {
+      id: user.id,
+      name: `${user.first_name} ${user.last_name}`,
+      email: user.email,
+    };
+
+    const token = this.jwtService.encode(payload);
+
+    return { user, token };
   }
 }

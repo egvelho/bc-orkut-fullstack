@@ -8,6 +8,7 @@ import {
 } from "routing-controllers";
 import { SignInDto } from "./dto/sign-in.dto";
 import { AuthService } from "./auth.service";
+import { CreateUserDto } from "../user/dtos/create-user.dto";
 
 @JsonController("/auth")
 export class AuthController {
@@ -24,7 +25,10 @@ export class AuthController {
   }
 
   @Post("/sign-up")
-  async signUp() {}
+  async signUp(@Body() createUserDto: CreateUserDto) {
+    const response = await this.authService.signUp(createUserDto);
+    return response;
+  }
 
   @Authorized()
   @Get("/session")

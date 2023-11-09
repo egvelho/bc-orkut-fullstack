@@ -7,7 +7,7 @@ export class UserRepository {
       data: {
         first_name: data.first_name,
         last_name: data.last_name,
-        avatar: data.avatar,
+        avatar: data.avatar ?? "/default-avatar.png",
         passwd: data.password,
         email: data.email,
       },

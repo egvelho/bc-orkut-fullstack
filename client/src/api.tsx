@@ -8,7 +8,9 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = TokenStorage.getToken();
-  config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
 
@@ -17,7 +19,7 @@ api.interceptors.response.use(
     return config;
   },
   (error) => {
-    if (error.response.status === 400) {
+    if (error.response.data.errors && error.response.status >= 400) {
       const errors = error.response.data.errors.map((issue) =>
         Object.values(issue.constraints).at(0)
       );
