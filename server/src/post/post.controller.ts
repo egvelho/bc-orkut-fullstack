@@ -1,3 +1,4 @@
+import type { User } from "../user/user.types";
 import {
   JsonController,
   Get,
@@ -8,6 +9,8 @@ import {
   Param,
   Body,
   HttpCode,
+  Authorized,
+  CurrentUser,
 } from "routing-controllers";
 import { PostRepository } from "./post.repository";
 import { CreatePostDto } from "./dtos/create-post.dto";
@@ -44,21 +47,30 @@ export class PostController {
     return post;
   }
 
+  @Authorized()
   @HttpCode(201)
   @Post()
-  async createPost(@Body() body: CreatePostDto) {
+  async createPost(@Body() body: CreatePostDto, @CurrentUser() user: User) {
+    body.user_id = user.id;
     const post = await this.postRepository.createPost(body);
     return post;
   }
 
+  @Authorized()
   @Delete("/:id")
-  async deleteById(@Param("id") postId: number) {
+  async deleteById(@Param("id") postId: number, @CurrentUser() user: User) {
     const post = await this.postRepository.deletePost(postId);
     return post;
   }
 
+  @Authorized()
   @Put("/:id")
-  async updateById(@Param("id") postId: number, @Body() body: UpdatePostDto) {
+  async updateById(
+    @Param("id") postId: number,
+    @Body() body: UpdatePostDto,
+    @CurrentUser() user: User
+  ) {
+    body.user_id = user.id;
     const post = await this.postRepository.updatePost(postId, body);
     return post;
   }
@@ -69,12 +81,15 @@ export class PostController {
     return comments;
   }
 
+  @Authorized()
   @HttpCode(201)
   @Post("/:id/comments")
   async createPostComment(
     @Param("id") postId: number,
-    @Body() body: CreatePostCommentDto
+    @Body() body: CreatePostCommentDto,
+    @CurrentUser() user: User
   ) {
+    body.user_id = user.id;
     const comment = await this.postRepository.createPostComment(postId, body);
     return comment;
   }

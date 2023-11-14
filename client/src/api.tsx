@@ -1,12 +1,17 @@
 import axios from "axios";
 import toast from "react-simple-toasts";
 import { TokenStorage } from "./tokenStorage";
+import { globalNavigate } from "./globalNavigate";
+import { useGlobalStore } from "./useGlobalStore";
+
+const { setIsLoading } = useGlobalStore.getState();
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 api.interceptors.request.use((config) => {
+  setIsLoading(true);
   const token = TokenStorage.getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -16,9 +21,21 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (config) => {
+    setIsLoading(false);
     return config;
   },
   (error) => {
+    setIsLoading(false);
+    if (error.response.status === 401) {
+      const token = TokenStorage.getToken();
+      if (token) {
+        TokenStorage.removeToken();
+        toast("Sua sessão expirou. Por favor, entre novamente.");
+        globalNavigate.navigate("/entrar");
+        return;
+      }
+    }
+
     if (error.response.data.errors && error.response.status >= 400) {
       const errors = error.response.data.errors.map((issue) =>
         Object.values(issue.constraints).at(0)

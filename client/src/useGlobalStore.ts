@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 const initialState = {
+  isLoading: false,
   isAuthorized: false,
   user: {
     id: 0,
@@ -12,6 +13,7 @@ const initialState = {
 };
 
 type GlobalStore = {
+  isLoading: boolean;
   isAuthorized: boolean;
   user: {
     id: number;
@@ -22,6 +24,7 @@ type GlobalStore = {
   };
   setUser: (user: GlobalStore["user"]) => void;
   setIsAuthorized: (isAuthorized: boolean) => void;
+  setIsLoading: (isLoading: boolean) => void;
 };
 
 export const useGlobalStore = create<GlobalStore>((set) => {
@@ -35,6 +38,11 @@ export const useGlobalStore = create<GlobalStore>((set) => {
     setIsAuthorized(isAuthorized) {
       set({
         isAuthorized,
+      });
+    },
+    setIsLoading(isLoading) {
+      set({
+        isLoading,
       });
     },
   };

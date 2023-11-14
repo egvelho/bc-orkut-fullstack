@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaSpinner } from "react-icons/fa";
 import { Helmet } from "react-helmet";
 import { LinkButton } from "../components/LinkButton";
 import { Card } from "../components/Card";
@@ -12,13 +11,11 @@ const initialPostsList = {
   count: 0,
   posts: [],
 };
-const initialLoading = true;
 const initialSearch = "";
 const initialOrderBy = "desc";
 
 export function HomeRoute() {
   const [postsList, setPostsList] = useState(initialPostsList);
-  const [loading, setLoading] = useState(initialLoading);
   const [search, setSearch] = useState(initialSearch);
   const [orderBy, setOrderBy] = useState(initialOrderBy);
   const pageCount = Math.ceil(postsList.count / pageSize);
@@ -43,22 +40,11 @@ export function HomeRoute() {
     loadPosts();
   }, [search, orderBy]);
 
-  useEffect(() => {
-    if (postsList.posts.length > 0) {
-      setLoading(false);
-    }
-  }, [postsList]);
-
   return (
     <Card>
       <Helmet>
         <title>Home | Orkut</title>
       </Helmet>
-      {loading && (
-        <div className="flex justify-center">
-          <FaSpinner className="text-4xl animate-spin" />
-        </div>
-      )}
       <div className="flex gap-2">
         <input
           type="search"
@@ -77,9 +63,7 @@ export function HomeRoute() {
           <option value="asc">Mais antigas</option>
         </select>
       </div>
-      {postsList.posts.length === 0 &&
-        loading === false &&
-        "Nenhum resultado encontrado"}
+      {postsList.posts.length === 0 && "Nenhum resultado encontrado"}
       {postsList.posts.map((post) => {
         return (
           <div key={post.id} className="border-b py-2">

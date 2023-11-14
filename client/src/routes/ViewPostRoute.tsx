@@ -3,6 +3,7 @@ import toast from "react-simple-toasts";
 import { Helmet } from "react-helmet";
 import { api } from "../api";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useGlobalStore } from "../useGlobalStore";
 import { Card } from "../components/Card";
 import { Title } from "../components/Title";
 import { Button } from "../components/Button";
@@ -24,6 +25,7 @@ const initialComments = [];
 const initialComment = "";
 
 export function ViewPostRoute() {
+  const isAuthorized = useGlobalStore((state) => state.isAuthorized);
   const params = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(initialPost);
@@ -105,18 +107,41 @@ export function ViewPostRoute() {
       </Card>
       <Card>
         <Title>{texts.commentsTitle}</Title>
-        <form onSubmit={onCommentSubmit} className="mt-2">
-          <textarea
-            placeholder="Digite o seu comentário"
-            rows={3}
-            className={`rounded-lg px-2 py-1 border focus:border-green-500 outline-none resize-none w-full`}
-            value={comment}
-            onChange={(event) => setComment(event.target.value)}
-          />
-          <div className="flex justify-end mt-2">
-            <Button type="submit">{texts.commentsSendButton}</Button>
+        {isAuthorized && (
+          <form onSubmit={onCommentSubmit} className="mt-2">
+            <textarea
+              placeholder="Digite o seu comentário"
+              rows={3}
+              className={`rounded-lg px-2 py-1 border focus:border-green-500 outline-none resize-none w-full`}
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+            />
+            <div className="flex justify-end mt-2">
+              <Button type="submit">{texts.commentsSendButton}</Button>
+            </div>
+          </form>
+        )}
+        {!isAuthorized && (
+          <div className="my-4">
+            <p>
+              Para comentar, você deve{" "}
+              <Link
+                to="/entrar"
+                className="text-blue-600 hover:text-blue-800 hover:underline font-bold"
+              >
+                entrar
+              </Link>{" "}
+              ou{" "}
+              <Link
+                to="/criar-conta"
+                className="text-blue-600 hover:text-blue-800 hover:underline font-bold"
+              >
+                criar uma conta
+              </Link>
+              .
+            </p>
           </div>
-        </form>
+        )}
         <div>
           {comments.map((comment) => (
             <div key={comment.id} className="border-b py-2">

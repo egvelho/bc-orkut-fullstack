@@ -1,5 +1,6 @@
 import type { SignInDto } from "./dto/sign-in.dto";
 import type { CreateUserDto } from "../user/dtos/create-user.dto";
+import bcrypt from "bcrypt";
 import { UnauthorizedError, BadRequestError } from "routing-controllers";
 import { UserRepository } from "../user/user.repository";
 import { JwtService } from "./jwt.service";
@@ -20,7 +21,9 @@ export class AuthService {
       throw new UnauthorizedError("Não existe um usuário com esse email");
     }
 
-    if (password !== maybeUser.passwd) {
+    const passwordMatches = await bcrypt.compare(password, maybeUser.passwd);
+
+    if (!passwordMatches) {
       throw new UnauthorizedError("Email ou senha inválidos");
     }
 

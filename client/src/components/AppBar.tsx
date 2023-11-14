@@ -1,16 +1,25 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-simple-toasts";
+import { FaSpinner } from "react-icons/fa";
+import { globalNavigate } from "../globalNavigate";
 import { LinkButton } from "./LinkButton";
 import { Button } from "./Button";
 import { useGlobalStore } from "../useGlobalStore";
 import { TokenStorage } from "../tokenStorage";
 
 export function AppBar() {
-  const navigate = useNavigate();
   const user = useGlobalStore((state) => state.user);
   const setUser = useGlobalStore((state) => state.setUser);
   const setIsAuthorized = useGlobalStore((state) => state.setIsAuthorized);
   const isAuthorized = useGlobalStore((state) => state.isAuthorized);
+  const isLoading = useGlobalStore((state) => state.isLoading);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    globalNavigate.navigate = navigate;
+  }, [navigate]);
 
   function logout() {
     TokenStorage.removeToken();
@@ -36,6 +45,7 @@ export function AppBar() {
         >
           Página inicial
         </Link>
+        {isLoading && <FaSpinner className="animate-spin text-2xl" />}
       </div>
       {isAuthorized && (
         <div className="flex flex-row items-center gap-4">

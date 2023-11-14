@@ -87,7 +87,7 @@ function FriendsCard({ id }) {
       <h2 className="lowercase font-bold">Amigos</h2>
       <div className="flex flex-row flex-wrap">
         {friends.map((friend) => (
-          <div className="w-1/3 p-1 box-border text-center">
+          <div className="w-1/3 p-1 box-border text-center" key={friend.id}>
             <Link to={`/perfil/${friend.id}`}>
               <img
                 src={friend.avatar}

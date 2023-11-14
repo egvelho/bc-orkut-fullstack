@@ -26,7 +26,7 @@ async function postSeed() {
   console.log("Seeding realizado com sucesso!");
 }
 
-async function commentSeed(post, usersIds) {
+async function commentSeed(post: any, usersIds: number[]) {
   const commentCount =
     minCommentCount + Math.round(Math.random() * commentRange);
   for (let index = 0; index < commentCount; index++) {
@@ -40,21 +40,21 @@ async function commentSeed(post, usersIds) {
   }
 }
 
-function generatePost(user_id) {
+function generatePost(user_id: number) {
   return {
     user_id,
     content: faker.lorem.words(5 + Math.round(Math.random() * 5)),
   };
 }
 
-function generateComment(user_id) {
+function generateComment(user_id: number) {
   return {
     user_id,
     message: faker.lorem.words(2 + Math.round(Math.random() * 3)),
   };
 }
 
-function getRandomUserId(usersId) {
+function getRandomUserId(usersId: number[]) {
   return usersId[Math.floor(Math.random() * usersId.length)];
 }
 

@@ -9,6 +9,7 @@ import {
 import { SignInDto } from "./dto/sign-in.dto";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "../user/dtos/create-user.dto";
+import type { User } from "../user/user.types";
 
 @JsonController("/auth")
 export class AuthController {
@@ -32,7 +33,7 @@ export class AuthController {
 
   @Authorized()
   @Get("/session")
-  async session(@CurrentUser() user: Object) {
+  async session(@CurrentUser() user: User) {
     return user;
   }
 }

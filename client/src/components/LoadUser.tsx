@@ -14,6 +14,9 @@ export function LoadUser() {
     }
 
     const request = await api.get("/auth/session");
+    if (request === undefined) {
+      return;
+    }
     const user = request.data;
     setIsAuthorized(true);
     setUser({
