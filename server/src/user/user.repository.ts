@@ -67,4 +67,16 @@ export class UserRepository {
         limit 9;`;
     return friends;
   }
+
+  async updateAvatar(userId: number, avatar: string) {
+    const user = await prisma.users.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        avatar,
+      },
+    });
+    return user;
+  }
 }
