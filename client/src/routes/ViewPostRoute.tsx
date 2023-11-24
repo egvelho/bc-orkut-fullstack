@@ -19,6 +19,7 @@ const initialPost = {
   id: 0,
   content: "",
   created_at: "",
+  user_id: 0,
 };
 
 const initialComments = [];
@@ -26,6 +27,7 @@ const initialComment = "";
 
 export function ViewPostRoute() {
   const isAuthorized = useGlobalStore((state) => state.isAuthorized);
+  const user = useGlobalStore((state) => state.user);
   const params = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(initialPost);
@@ -88,17 +90,22 @@ export function ViewPostRoute() {
             },
           ]}
         />
-        <div className="flex gap-2">
-          <Button className="bg-red-500 hover:bg-red-700" onClick={deletePost}>
-            Deletar
-          </Button>
-          <LinkButton
-            className="bg-amber-500 hover:bg-amber-700"
-            to={`/editar-publicacao/${params.id}`}
-          >
-            Editar
-          </LinkButton>
-        </div>
+        {isAuthorized && user.id === post.user_id && (
+          <div className="flex gap-2">
+            <Button
+              className="bg-red-500 hover:bg-red-700"
+              onClick={deletePost}
+            >
+              Deletar
+            </Button>
+            <LinkButton
+              className="bg-amber-500 hover:bg-amber-700"
+              to={`/editar-publicacao/${params.id}`}
+            >
+              Editar
+            </LinkButton>
+          </div>
+        )}
         <div className="text-gray-500 mb-2">#{post.id}</div>
         <div className="text-gray-500">
           {new Date(post.created_at).toLocaleDateString()}

@@ -1,6 +1,7 @@
 import { prisma } from "../prisma";
 import bcrypt from "bcrypt";
 import type { CreateUserDto } from "./dtos/create-user.dto";
+import type { UpdateUserDto } from "./dtos/update-user.dto";
 
 export class UserRepository {
   async createUser(data: CreateUserDto) {
@@ -13,6 +14,20 @@ export class UserRepository {
         last_name: data.last_name,
         avatar: data.avatar ?? "/default-avatar.png",
         passwd: hash,
+        email: data.email,
+      },
+    });
+    return user;
+  }
+
+  async updateUser(userId: number, data: UpdateUserDto) {
+    const user = await prisma.users.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        first_name: data.first_name,
+        last_name: data.last_name,
         email: data.email,
       },
     });
@@ -42,13 +57,58 @@ export class UserRepository {
     return users;
   }
 
-  async addFriend(userA: number, userB: number) {
-    const friend = await prisma.friends.create({
-      data: {
-        user_a: userA,
-        user_b: userB,
+  async checkIsFriend(userId: number, friendId: number) {
+    const maybeFriend = await prisma.friends.findFirst({
+      where: {
+        OR: [
+          {
+            user_a: userId,
+            user_b: friendId,
+          },
+          {
+            user_a: friendId,
+            user_b: userId,
+          },
+        ],
       },
     });
+
+    const isFriend = maybeFriend !== null;
+    return isFriend;
+  }
+
+  async addFriend(userId: number, friendId: number) {
+    const friend = await prisma.friends.create({
+      data: {
+        user_a: userId,
+        user_b: friendId,
+      },
+    });
+    return friend;
+  }
+
+  async removeFriend(userId: number, friendId: number) {
+    const friend = await prisma.friends.findFirst({
+      where: {
+        OR: [
+          {
+            user_a: userId,
+            user_b: friendId,
+          },
+          {
+            user_a: friendId,
+            user_b: userId,
+          },
+        ],
+      },
+    });
+
+    await prisma.friends.delete({
+      where: {
+        id: friend?.id,
+      },
+    });
+
     return friend;
   }
 

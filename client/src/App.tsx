@@ -9,6 +9,7 @@ import { PostPageRoute } from "./routes/PostPageRoute";
 import { ProfileRoute } from "./routes/ProfileRoute";
 import { SignInRoute } from "./routes/SignInRoute";
 import { SignUpRoute } from "./routes/SignUpRoute";
+import { UpdateProfileRoute } from "./routes/UploadProfileRoute";
 import { LoadUser } from "./components/LoadUser";
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/editar-publicacao/:id" element={<EditPostRoute />} />
           <Route path="/publicacoes/:page" element={<PostPageRoute />} />
           <Route path="/perfil/:id" element={<ProfileRoute />} />
+          <Route path="/atualizar-perfil" element={<UpdateProfileRoute />} />
           <Route path="/entrar" element={<SignInRoute />} />
           <Route path="/criar-conta" element={<SignUpRoute />} />
         </Routes>

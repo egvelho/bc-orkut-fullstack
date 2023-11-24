@@ -50,6 +50,7 @@ export function AppBar() {
       {isAuthorized && (
         <div className="flex flex-row items-center gap-4">
           <LinkButton to="/criar-publicacao">Criar publicação</LinkButton>
+          <LinkButton to="/atualizar-perfil">Atualizar perfil</LinkButton>
           <Button onClick={logout}>Sair</Button>
           <Link to="/usuario" className="flex flex-row items-center gap-2">
             {user.first_name} {user.last_name}
