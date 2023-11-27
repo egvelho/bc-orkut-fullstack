@@ -20,6 +20,12 @@ const initialPost = {
   content: "",
   created_at: "",
   user_id: 0,
+  users: {
+    id: 0,
+    avatar: "/default-avatar.png",
+    first_name: "",
+    last_name: "",
+  },
 };
 
 const initialComments = [];
@@ -106,9 +112,25 @@ export function ViewPostRoute() {
             </LinkButton>
           </div>
         )}
-        <div className="text-gray-500 mb-2">#{post.id}</div>
-        <div className="text-gray-500">
-          {new Date(post.created_at).toLocaleDateString()}
+        <div className="flex items-center gap-2">
+          <Link to={`/perfil/${post.user_id}`}>
+            <img
+              src={post.users.avatar}
+              alt={`Foto de ${post.users.first_name} ${post.users.last_name}`}
+              className="w-[48px] h-[48px] rounded-full"
+            />
+          </Link>
+          <div className="flex flex-col">
+            <Link
+              to={`/perfil/${post.user_id}`}
+              className="text-blue-600 hover:text-blue-800 hover:underline font-bold"
+            >
+              {post.users.first_name} {post.users.last_name}
+            </Link>
+            <span className="text-sm text-gray-500">
+              {new Date(post.created_at).toLocaleDateString()}
+            </span>
+          </div>
         </div>
         <p>{post.content}</p>
       </Card>

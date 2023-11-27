@@ -18,6 +18,8 @@ export function UpdateProfileRoute() {
   const [name, setName] = useState(user.first_name);
   const [surname, setSurname] = useState(user.last_name);
   const [email, setEmail] = useState(user.email);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     setName(user.first_name);
@@ -27,10 +29,25 @@ export function UpdateProfileRoute() {
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if ((password || confirmPassword) && password !== confirmPassword) {
+      toast("As senhas são diferentes", {
+        render(message) {
+          return (
+            <div className="p-2 rounded-md text-gray-100 bg-red-500">
+              {message}
+            </div>
+          );
+        },
+      });
+      return;
+    }
+
     const user = {
       first_name: name,
       last_name: surname,
       email,
+      password: password || undefined,
     };
 
     const response = await api.patch("/users/update-myself", user);
@@ -69,7 +86,22 @@ export function UpdateProfileRoute() {
           quandoMudar={setEmail}
           textoPadrao="Email"
         />
+
         <Button type="submit">Enviar</Button>
+        <h2 className="font-bold text-xl mt-4">Segurança (atualizar senha)</h2>
+        <TextField
+          valor={password}
+          tipo="password"
+          quandoMudar={setPassword}
+          textoPadrao="Senha"
+        />
+        <TextField
+          valor={confirmPassword}
+          tipo="password"
+          quandoMudar={setConfirmPassword}
+          textoPadrao="Confirmar senha"
+        />
+        <Button type="submit">Alterar agora</Button>
       </form>
     </Card>
   );

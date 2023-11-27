@@ -21,6 +21,14 @@ export class UserRepository {
   }
 
   async updateUser(userId: number, data: UpdateUserDto) {
+    let passwd: string | undefined;
+
+    if (data.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(data.password, salt);
+      passwd = hash;
+    }
+
     const user = await prisma.users.update({
       where: {
         id: userId,
@@ -29,6 +37,7 @@ export class UserRepository {
         first_name: data.first_name,
         last_name: data.last_name,
         email: data.email,
+        passwd,
       },
     });
     return user;

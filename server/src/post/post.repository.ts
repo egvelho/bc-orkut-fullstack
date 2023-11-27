@@ -66,6 +66,16 @@ export class PostRepository {
       where: {
         id: postId,
       },
+      include: {
+        users: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            avatar: true,
+          },
+        },
+      },
     });
     return post;
   }

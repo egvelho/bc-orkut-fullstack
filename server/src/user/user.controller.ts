@@ -79,4 +79,14 @@ export class UserController {
     const friend = await this.userService.removeFriend(user.id, friendId);
     return friend;
   }
+
+  @Authorized()
+  @Get("/check-is-friend/:friendId")
+  async checkIsFriend(
+    @Param("friendId") friendId: number,
+    @CurrentUser() user: User
+  ) {
+    const isFriend = await this.userRepository.checkIsFriend(user.id, friendId);
+    return { isFriend };
+  }
 }
