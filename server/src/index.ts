@@ -7,14 +7,25 @@ import { PostController } from "./post/post.controller";
 import { UserController } from "./user/user.controller";
 import { AuthController } from "./auth/auth.controller";
 import { FileController } from "./file/file.controller";
+import { ScrapController } from "./scrap/scrap.controller";
+
 import { authorizationChecker } from "./auth/checkers/authorizationChecker";
 import { currentUserChecker } from "./auth/checkers/currentUserChecker";
+
+import { setupMongoDb } from "./mongodb";
+setupMongoDb();
 
 const port = process.env.PORT;
 const host = process.env.HOST;
 const app = createExpressServer({
   cors: true,
-  controllers: [PostController, UserController, AuthController, FileController],
+  controllers: [
+    PostController,
+    UserController,
+    AuthController,
+    FileController,
+    ScrapController,
+  ],
   authorizationChecker,
   currentUserChecker,
 });
