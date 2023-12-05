@@ -1,7 +1,9 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 export { TokenExpiredError } from "jsonwebtoken";
 import type { Request } from "express";
+import { Service } from "typedi";
 
+@Service()
 export class JwtService {
   constructor() {
     const jwtSecret = process.env.JWT_SECRET;

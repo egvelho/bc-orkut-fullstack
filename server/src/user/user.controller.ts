@@ -9,21 +9,20 @@ import {
   UploadedFile,
   Patch,
 } from "routing-controllers";
+import { Service } from "typedi";
 import { UserRepository } from "./user.repository";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { User } from "./user.types";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 
+@Service()
 @JsonController("/users")
 export class UserController {
-  constructor() {
-    this.userRepository = new UserRepository();
-    this.userService = new UserService();
-  }
-
-  userRepository: UserRepository;
-  userService: UserService;
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly userService: UserService
+  ) {}
 
   @Get("/:userId")
   async getById(@Param("userId") userId: number) {

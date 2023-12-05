@@ -2,7 +2,9 @@ import "reflect-metadata";
 import "dotenv/config";
 
 import express from "express";
-import { createExpressServer } from "routing-controllers";
+import { createExpressServer, useContainer } from "routing-controllers";
+import { Container } from "typedi";
+
 import { PostController } from "./post/post.controller";
 import { UserController } from "./user/user.controller";
 import { AuthController } from "./auth/auth.controller";
@@ -14,6 +16,7 @@ import { currentUserChecker } from "./auth/checkers/currentUserChecker";
 
 import { setupMongoDb } from "./mongodb";
 setupMongoDb();
+useContainer(Container);
 
 const port = process.env.PORT;
 const host = process.env.HOST;

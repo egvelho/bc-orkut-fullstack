@@ -1,14 +1,12 @@
 import { BadRequestError } from "routing-controllers";
+import { Service } from "typedi";
 import { UserRepository } from "./user.repository";
 import fs from "fs/promises";
 import sharp from "sharp";
 
+@Service()
 export class UserService {
-  constructor() {
-    this.userRepository = new UserRepository();
-  }
-
-  userRepository: UserRepository;
+  constructor(private readonly userRepository: UserRepository) {}
 
   async addFriend(userId: number, friendId: number) {
     const isFriend = await this.userRepository.checkIsFriend(userId, friendId);

@@ -1,8 +1,10 @@
+import { Service } from "typedi";
 import { CreateScrapDto } from "./dtos/create-scrap.dto";
 import { UpdateScrapDto } from "./dtos/update-scrap.dto";
 import { mongodb, Collection, ObjectId } from "../mongodb";
 import type { Scrap } from "./scrap.types";
 
+@Service()
 export class ScrapRepository {
   constructor() {
     this.scraps = mongodb.collection("scraps");

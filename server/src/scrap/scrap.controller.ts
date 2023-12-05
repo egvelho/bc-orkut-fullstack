@@ -9,18 +9,16 @@ import {
   CurrentUser,
   Body,
 } from "routing-controllers";
+import { Service } from "typedi";
 import { ScrapService } from "./scrap.service";
 import { CreateScrapDto } from "./dtos/create-scrap.dto";
 import { UpdateScrapDto } from "./dtos/update-scrap.dto";
 import type { User } from "../user/user.types";
 
+@Service()
 @JsonController("/scraps")
 export class ScrapController {
-  constructor() {
-    this.scrapService = new ScrapService();
-  }
-
-  scrapService: ScrapService;
+  constructor(private readonly scrapService: ScrapService) {}
 
   @Authorized()
   @Get("/owner/:ownerId")
@@ -68,7 +66,7 @@ export class ScrapController {
     @Param("scrapId") scrapId: string,
     @CurrentUser() user: User
   ) {
-    const scrap = await this.scrapService.deleteScrap(scrapId);
+    const scrap = await this.scrapService.deleteScrap(scrapId, user.id);
     return scrap;
   }
 }

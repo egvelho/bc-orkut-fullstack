@@ -1,13 +1,11 @@
 import { UnauthorizedError } from "routing-controllers";
+import { Service } from "typedi";
 import { PostRepository } from "./post.repository";
 import type { UpdatePostDto } from "./dtos/update-post.dto";
 
+@Service()
 export class PostService {
-  constructor() {
-    this.postRepository = new PostRepository();
-  }
-
-  postRepository: PostRepository;
+  constructor(private readonly postRepository: PostRepository) {}
 
   async deletePost(postId: number, userId: number) {
     const oldPost = await this.postRepository.readPost(postId);

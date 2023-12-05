@@ -6,18 +6,16 @@ import {
   Authorized,
   CurrentUser,
 } from "routing-controllers";
+import { Service } from "typedi";
 import { SignInDto } from "./dto/sign-in.dto";
 import { AuthService } from "./auth.service";
 import { CreateUserDto } from "../user/dtos/create-user.dto";
 import type { User } from "../user/user.types";
 
+@Service()
 @JsonController("/auth")
 export class AuthController {
-  constructor() {
-    this.authService = new AuthService();
-  }
-
-  authService: AuthService;
+  constructor(private readonly authService: AuthService) {}
 
   @Post("/sign-in")
   async signIn(@Body() signInDto: SignInDto) {

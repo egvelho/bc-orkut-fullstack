@@ -5,15 +5,13 @@ import {
   QueryParam,
   HeaderParam,
 } from "routing-controllers";
+import { Service } from "typedi";
 import { FileService } from "./file.service";
 
+@Service()
 @Controller("/file")
 export class FileController {
-  constructor() {
-    this.fileService = new FileService();
-  }
-
-  fileService: FileService;
+  constructor(private readonly fileService: FileService) {}
 
   @Get("/:path")
   async getFile(

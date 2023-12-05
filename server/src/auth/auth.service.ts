@@ -1,18 +1,17 @@
 import type { SignInDto } from "./dto/sign-in.dto";
 import type { CreateUserDto } from "../user/dtos/create-user.dto";
 import bcrypt from "bcrypt";
+import { Service } from "typedi";
 import { UnauthorizedError, BadRequestError } from "routing-controllers";
 import { UserRepository } from "../user/user.repository";
 import { JwtService } from "./jwt.service";
 
+@Service()
 export class AuthService {
-  constructor() {
-    this.userRepository = new UserRepository();
-    this.jwtService = new JwtService();
-  }
-
-  userRepository: UserRepository;
-  jwtService: JwtService;
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService
+  ) {}
 
   async signIn({ email, password }: SignInDto) {
     const maybeUser = await this.userRepository.findByEmail(email);

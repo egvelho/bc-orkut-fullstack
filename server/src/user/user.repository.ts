@@ -1,8 +1,10 @@
 import { prisma } from "../prisma";
 import bcrypt from "bcrypt";
+import { Service } from "typedi";
 import type { CreateUserDto } from "./dtos/create-user.dto";
 import type { UpdateUserDto } from "./dtos/update-user.dto";
 
+@Service()
 export class UserRepository {
   async createUser(data: CreateUserDto) {
     const salt = await bcrypt.genSalt(10);

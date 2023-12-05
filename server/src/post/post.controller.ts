@@ -1,4 +1,5 @@
 import type { User } from "../user/user.types";
+import { Service } from "typedi";
 import {
   JsonController,
   Get,
@@ -18,15 +19,13 @@ import { CreatePostDto } from "./dtos/create-post.dto";
 import { UpdatePostDto } from "./dtos/update-post.dto";
 import { CreatePostCommentDto } from "./dtos/create-post-comment.dto";
 
+@Service()
 @JsonController("/posts")
 export class PostController {
-  constructor() {
-    this.postRepository = new PostRepository();
-    this.postService = new PostService();
-  }
-
-  postRepository: PostRepository;
-  postService: PostService;
+  constructor(
+    private readonly postRepository: PostRepository,
+    private readonly postService: PostService
+  ) {}
 
   @Get()
   async getAll(

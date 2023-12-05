@@ -1,8 +1,10 @@
+import { Service } from "typedi";
 import { prisma } from "../prisma";
 import type { CreatePostDto } from "./dtos/create-post.dto";
 import type { UpdatePostDto } from "./dtos/update-post.dto";
 import type { CreatePostCommentDto } from "./dtos/create-post-comment.dto";
 
+@Service()
 export class PostRepository {
   async listPosts({
     limit,
