@@ -36,6 +36,15 @@ export function ProfileRoute() {
     setIsFriend(response.data.isFriend);
   }
 
+  async function sendScrap() {
+    const message = prompt("Digite a sua mensagem");
+    const response = await api.post("/scraps", {
+      message,
+      ownerId: user.id,
+    });
+    alert("Scrap enviado com sucesso!");
+  }
+
   async function addFriend() {
     const response = await api.post(`/users/add-friend/${user.id}`);
     if (response !== undefined) {
@@ -85,6 +94,14 @@ export function ProfileRoute() {
                   className="bg-gray-300 hover:bg-gray-400 text-black"
                 >
                   Remover amigo
+                </Button>
+              )}
+              {isFriend === true && (
+                <Button
+                  onClick={sendScrap}
+                  className="bg-pink-500 hover:bg-pink-600"
+                >
+                  Enviar scrap
                 </Button>
               )}
             </div>
